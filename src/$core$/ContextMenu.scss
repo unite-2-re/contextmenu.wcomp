@@ -1,0 +1,315 @@
+@layer u2-long-text {
+
+    //
+    @property --scroll-left   { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-top    { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --offset-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --offset-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --size-coef-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --size-coef-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --percent-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --percent-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --client-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --client-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --page-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --page-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @keyframes by-scroll-y {
+        0%   { --percent-y: 0.0; }
+        100% { --percent-y: 1.0; }
+    };
+
+    //
+    *[inert] {
+        pointer-events: none !important;
+    }
+
+    //
+    :host(u-contextmenu), :host {
+        & {
+            container-type: inline-size;
+            display: none;
+
+            //
+            cursor: default;
+
+            //
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            //
+            pointer-events: auto;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -ms-user-drag: none;
+            user-drag: none;
+
+            //
+            grid-template-columns: [menu] minmax(0px, 1fr) [scroll] minmax(0px, 0.5rem);
+            grid-template-rows: minmax(0px, 1fr);
+
+            //
+            block-size: max-content;
+            max-block-size: 100%;
+            min-inline-size: 6rem;
+            inline-size: max-content;
+            max-inline-size: 100%;
+
+            //
+            position: fixed;
+            inset-inline-start: calc(var(--client-x, 0) * 1px);
+            inset-block-start: calc(var(--client-y, 0) * 1px);
+            inset-inline-end: auto;
+            inset-block-end: auto;
+
+            //
+            background-color: #E0E0E0;
+            border-radius: 0.125rem;
+
+            //
+            padding: 0px;
+            margin: 0px;
+        }
+
+        //
+        * {
+            //
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -ms-user-drag: none;
+            user-drag: none;
+        }
+
+        //
+        &:focus, :focus, ::slotted(:focus) {
+            outline: none;
+        }
+
+        //
+        ::slotted(li) {
+            & {
+                padding: 0.25rem;
+                margin: 0px;
+                list-style-type: none;
+                min-block-size: 1rem;
+                block-size: max-content;
+                max-block-size: 2rem;
+                box-sizing: border-box;
+
+                //
+                cursor: pointer;
+
+                //
+                display: grid;
+                grid-template-columns: [icon] minmax(1rem, max-content) [content] minmax(0px, 1fr);
+            }
+
+            //
+            & > * {
+                pointer-events: none;
+                grid-column: content;
+                grid-row: 1 / 1 span;
+            }
+        }
+
+        //
+        .u2-scroll-box {
+            & {
+                transform: none;
+                container-type: size;
+                contain: content;
+                position: relative;
+
+                //
+                grid-column: scroll;
+                grid-row: 1 / 1 span;
+                inline-size: 100%;
+                block-size: 100%;
+
+                user-select: none;
+                touch-action: none;
+                pointer-events: none;
+
+                //
+                place-self: start start;
+                place-content: center start;
+                place-items: center start;
+                inset: 0px;
+            }
+
+            //
+            &.hidden {
+                display: none;
+                visibility: collapse;
+                opacity: 0;
+            }
+
+            //
+            .u2-scroll-bar {
+                & {
+                    //
+                    transform: none;
+                    place-self: start start;
+                    inset: 0px;
+
+                    //
+                    animation-name: by-scroll-y;
+                    animation-timeline: --axis-scroll-y;
+                    animation-timing-function: linear;
+                    animation-fill-mode: both;
+                    animation-duration: 1ms;
+                    animation-range: contain;
+                    cursor: pointer;
+
+                    //
+                    inline-size: 100%;
+                    block-size: calc(100% * var(--size-coef-y));
+
+                    //
+                    background-color: #10101040;
+
+                    //
+                    user-select: none;
+                    touch-action: none;
+                    pointer-events: auto;
+                }
+
+                //
+                & { translate: 0px calc(var(--scroll-top) * var(--size-coef-y) * 1px) !important; }
+                @supports(timeline-scope: --axis-scroll-x) {
+                    translate: 0px calc(var(--percent-y) * (1 - var(--size-coef-y)) * 100cqi) !important;
+                }
+            }
+        }
+
+        //
+        .u2-menu-box {
+
+            //
+            .u2-menu-list {
+                box-sizing: border-box;
+                display: flex;
+                min-block-size: max-content;
+                block-size: max-content;
+                max-block-size: none;
+                flex-direction: column;
+                place-content: center;
+                place-items: stretch;
+                gap: 0.25rem;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            & {
+                //place-self: start;
+                inset: 0px;
+
+                //
+                scroll-timeline-name: --axis-scroll-y;
+                scroll-timeline-axis: block;
+
+                //
+                display: block;
+                padding: 0.125rem;
+                contain: content;
+
+                //
+                container-type: inline-size;
+
+                //
+                block-size: max-content;
+                min-inline-size: 100%;
+                inline-size: 100%;
+                max-inline-size: 100%;
+                max-block-size: 100%;
+                min-block-size: 1ch;
+                box-sizing: border-box;
+
+                //
+                overflow-y: hidden;
+                overflow-x: auto;
+                overflow-anchor: auto;
+                overflow-block: hidden;
+                overflow-inline: auto;
+
+                //
+                scrollbar-width: none;
+                scrollbar-gutter: stable;
+                scroll-behavior: smooth;
+                touch-action: pan-x;
+
+                //
+                pointer-events: auto;
+
+                //
+                grid-column: 1 / 2 span;
+                grid-row: 1 / 1 span;
+
+                //
+                white-space: nowrap;
+                text-overflow: clip;
+                word-break: keep-all;
+                word-wrap: normal;
+                flex-wrap: nowrap;
+
+                //
+                -webkit-user-drag: none;
+                -moz-user-drag: none;
+                user-drag: none;
+
+                //
+                user-select: none;
+                background-color: transparent;
+            }
+
+            //
+            &:has(*::selection) {
+                overflow-y: hidden !important;
+            }
+
+            //
+            @supports (animation-timeline: scroll()) {
+                & {
+                    transition-behavior: allow-discrete;
+                    animation-timeline: --axis-scroll-y;
+                    animation-range: contain;
+                    animation-fill-mode: both;
+                    animation-timing-function: linear;
+                    animation-duration: 1ms;
+                }
+            }
+        }
+    }
+
+    //
+    :host(u-contextmenu[data-hidden="false"]), :host(u-contextmenu:not([data-hidden])) {
+        display: grid;
+    }
+
+}
