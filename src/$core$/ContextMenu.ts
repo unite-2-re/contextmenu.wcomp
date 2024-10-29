@@ -87,6 +87,7 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
                 ctxMenu.dataset.hidden = "true";
             });
             if (el.icon) {
+                el.icon.remove?.();
                 el.icon.style.setProperty("grid-column", "icon");
                 li.append(el.icon);
             };
