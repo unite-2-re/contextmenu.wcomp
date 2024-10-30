@@ -96,6 +96,6 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
         });
 
         //
-        ctxMenu.dataset.hidden = "false";
+        delete ctxMenu.dataset.hidden;
     }
 }
