@@ -30,14 +30,22 @@
         100% { --percent-y: 1.0; }
     };
 
-    //
-    *[inert] {
-        pointer-events: none !important;
+    // global style
+    body:has(u-dropmenu:state(opened)) u-contextmenu {
+        @supports(position-anchor: --example) {
+            position-anchor: var(--anchor-group);
+            inset-inline-start: anchor(var(--anchor-group) start);
+            inset-block-start: anchor(var(--anchor-group) end);
+            inline-size: anchor-size(var(--anchor-group) self-inline);
+        }
     }
 
     //
-    :host(u-contextmenu), :host {
+    :host(u-contextmenu) {
         & {
+            --anchor-group: --u2-drop-menu;
+
+            //
             container-type: inline-size;
             display: none;
 
@@ -69,8 +77,8 @@
             block-size: max-content;
             max-block-size: 100%;
             min-inline-size: 6rem;
-            inline-size: max-content;
             max-inline-size: 100%;
+            inline-size: var(--inline-size, max-content);
 
             //
             position: fixed;

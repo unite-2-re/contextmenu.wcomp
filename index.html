@@ -21,10 +21,10 @@
         }, {passive: false, capture: true});
 
         // comment to enable native context menu
-        document.documentElement.addEventListener("contextmenu", (ev)=>{
+        /*document.documentElement.addEventListener("contextmenu", (ev)=>{
             ev.stopPropagation();
             ev.preventDefault();
-        }, {capture: true});
+        }, {capture: true});*/
 
         //
         if ("virtualKeyboard" in navigator && navigator?.virtualKeyboard) {

@@ -5,6 +5,9 @@ import styles from "./ContextMenu.scss?inline";
 import html from "./ContextMenu.html?raw";
 
 //
+import { unfixedClientZoom } from "./Zoom";
+
+//
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 
 //
@@ -71,12 +74,26 @@ interface CTXMenuElement {
 //
 export const openContextMenu = (event, content: CTXMenuElement[])=>{
     const initiator = event?.target;
-    const ctxMenu = document.querySelector("u-contextmenu") as HTMLElement;
+    const ctxMenu   = document.querySelector("u-contextmenu") as HTMLElement;
     if (ctxMenu) {
-        ctxMenu.style.setProperty("--client-x", event.clientX);
-        ctxMenu.style.setProperty("--client-y", event.clientY);
-        ctxMenu.style.setProperty("--page-x", event.pageX);
-        ctxMenu.style.setProperty("--page-y", event.pageY);
+
+        //
+        if (initiator.matches("u-dropmenu")) {
+            const bbox = initiator.getBoundingClientRect();
+            const zoom = unfixedClientZoom() || 1;
+            ctxMenu.style.setProperty("--inline-size", `${bbox.width * zoom}`);
+            ctxMenu.style.setProperty("--client-x", `${bbox.left * zoom}`);
+            ctxMenu.style.setProperty("--client-y", `${bbox.bottom * zoom}`);
+        } else {
+            // TODO: better inline size
+            ctxMenu.style.setProperty("--inline-size", `6rem`);
+            ctxMenu.style.setProperty("--client-x", event.clientX);
+            ctxMenu.style.setProperty("--client-y", event.clientY);
+            ctxMenu.style.setProperty("--page-x", event.pageX);
+            ctxMenu.style.setProperty("--page-y", event.pageY);
+        }
+
+        //
         ctxMenu.innerHTML = "";
 
         //
@@ -98,4 +115,11 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
         //
         delete ctxMenu.dataset.hidden;
     }
+}
+
+{   //
+    const style = document.createElement("style");
+    style.dataset.owner = "contextmenu";
+    style.innerHTML = `@import url("${preInit}");`;
+    document.head.appendChild(style);
 }
