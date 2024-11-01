@@ -1,5 +1,5 @@
 // @ts-ignore
-import styles from "./ContextMenu.scss?inline";
+import styles from "./ContextMenu.scss?inline&compress";
 
 // @ts-ignore
 import html from "./ContextMenu.html?raw";
@@ -117,9 +117,44 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
     }
 }
 
-{   //
-    const style = document.createElement("style");
-    style.dataset.owner = "contextmenu";
-    style.innerHTML = `@import url("${preInit}");`;
-    document.head.appendChild(style);
+//
+const OWNER = "contextmenu";
+
+//
+const setStyleURL = (base: [any, any], url: string)=>{
+    //
+    if (base[1] == "innerHTML") {
+        base[0][base[1]] = `@import url("${url}");`;
+    } else {
+        base[0][base[1]] = url;
+    }
 }
+
+//
+const loadStyleSheet = (inline: string, base?: [any, any])=>{
+    const url = URL.canParse(inline) ? inline : URL.createObjectURL(new Blob([inline], {type: "text/css"}));
+    if (base) setStyleURL(base, url);
+}
+
+//
+const loadInlineStyle = (inline: string, rootElement = document.head)=>{
+    const style = document.createElement("style");
+    style.dataset.owner = OWNER;
+    loadStyleSheet(inline, [style, "innerHTML"]);
+    (rootElement.querySelector("head") ?? rootElement).appendChild(style);
+}
+
+//
+const loadBlobStyle = (inline: string)=>{
+    const style = document.createElement("link");
+    style.rel = "stylesheet";
+    style.type = "text/css";
+    style.crossOrigin = "same-origin";
+    style.dataset.owner = OWNER;
+    loadStyleSheet(inline, [style, "href"]);
+    document.head.appendChild(style);
+    return style;
+}
+
+//
+loadBlobStyle(preInit);
