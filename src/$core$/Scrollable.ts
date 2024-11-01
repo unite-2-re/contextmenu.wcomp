@@ -1,4 +1,5 @@
 import { zoomOf } from "./Zoom";
+import { releasePointer } from "../../../interact.ts/src/$core$/PointerAPI";
 
 // TODO: support of fragments
 const onBorderObserve = new WeakMap<HTMLElement, Function[]>();
@@ -132,6 +133,9 @@ class Scrollable {
                     status.pointerLocation =
                         ev[["clientX", "clientY"][axis]] / zoomOf();
                     status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+
+                    // stronger policy now...
+                    ev.target?.setPointerCapture?.(ev.pointerId);
                 }
             });
 
@@ -179,6 +183,9 @@ class Scrollable {
                 //
                 status.pointerId = -1;
                 status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+
+                // stronger policy now...
+                ev.target?.releasePointerCapture?.(ev.pointerId);
             }
         };
 
