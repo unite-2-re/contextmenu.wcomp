@@ -86,10 +86,25 @@ interface CTXMenuElement {
 };
 
 //
-export const openContextMenu = (event, content: CTXMenuElement[])=>{
+export const closeContextMenu = ()=>{
+    const ctxMenu = document.querySelector("u-contextmenu") as HTMLElement;
+    if (ctxMenu) { ctxMenu.dataset.hidden = "true"; };
+}
+
+  // generateId :: Integer -> String
+const generateId = (len = 16) => {
+    var arr = new Uint8Array((len || 16) / 2);
+    window.crypto.getRandomValues(arr);
+    return Array.from(arr, (dec)=>dec.toString(16).padStart(2, "0")).join('')
+}
+
+//
+export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolean = false)=>{
     const initiator = event?.target;
     const ctxMenu   = document.querySelector("u-contextmenu") as HTMLElement;
-    if (ctxMenu) {
+
+    //
+    if (ctxMenu && (toggle && ctxMenu.dataset.hidden || !toggle)) {
 
         //
         if (initiator.matches("ui-dropmenu, .u2-dropmenu")) {
@@ -98,6 +113,16 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
             ctxMenu.style.setProperty("--inline-size", `${bbox.width * zoom}`);
             ctxMenu.style.setProperty("--client-x", `${bbox.left * zoom}`);
             ctxMenu.style.setProperty("--client-y", `${bbox.bottom * zoom}`);
+
+            //
+            const initialAnchor = initiator?.style?.getPropertyValue?.("anchor-name");
+            const ID = generateId();
+            if (!initialAnchor || initialAnchor == "none") {
+                initiator?.style?.setProperty?.("anchor-name", "--" + ID, "");
+            }
+
+            //
+            ctxMenu.style.setProperty("--anchor-group", (initiator?.style?.getPropertyValue?.("anchor-name") || ("--" + ID)), "");
         } else {
             // TODO: better inline size
             ctxMenu.style.setProperty("--inline-size", `6rem`);
@@ -113,7 +138,7 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
         //
         content.map((el: CTXMenuElement)=>{
             const li = document.createElement("li");
-            if (!li.dataset.highlight) { li.dataset.highlightHover = "2"; }
+            if (!li.dataset.highlightHover) { li.dataset.highlightHover = "1"; }
 
             //
             li.addEventListener("click", (e)=>{
@@ -131,6 +156,9 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
 
         //
         delete ctxMenu.dataset.hidden;
+    } else
+    if (ctxMenu && toggle && !ctxMenu.dataset.hidden) {
+        ctxMenu.dataset.hidden = "true";
     }
 }
 
