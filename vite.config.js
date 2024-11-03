@@ -54,8 +54,12 @@ export default {
             plugins: [autoprefixer(), deduplicate(), cssnano({
                 preset: ['advanced', {
                     calc: false,
+                    gridTemplate: false,
                     discardComments: {
                         removeAll: true
+                    },
+                    reduceIdents: {
+                        gridTemplate: false,
                     }
                 }],
             }), postcssPresetEnv({ stage: 0 })],

@@ -13,6 +13,7 @@ const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 //
 class ContextMenuElement extends HTMLElement {
     #initialized: boolean = false;
+    #themeStyle?: HTMLStyleElement;
 
     //
     #initialize() {
@@ -43,17 +44,30 @@ class ContextMenuElement extends HTMLElement {
                     this.dataset.hidden = "true";
                 }
             });
+
+            // @ts-ignore
+            const THEME_URL = "/externals/core/theme.js";
+            import(/* @vite-ignore */ "" + `${THEME_URL}`).then((module)=>{
+                // @ts-ignore
+                this.#themeStyle = module?.default?.(this.shadowRoot);
+                if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
+            }).catch(console.warn.bind(console));
+
+            //
+            if (!this.dataset.scheme) { this.dataset.scheme = "solid"; }
+            if (!this.dataset.highlight) { this.dataset.highlight = "1"; }
         }
     }
 
     //
-    constructor() {
-        super();
-    }
+    constructor() { super(); }
 
     //
     connectedCallback() {
         this.#initialize();
+
+        //this.#themeStyle = module?.default?.(this.shadowRoot);
+        //if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
     }
 }
 
@@ -78,7 +92,7 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
     if (ctxMenu) {
 
         //
-        if (initiator.matches("u-dropmenu")) {
+        if (initiator.matches("ui-dropmenu, .u2-dropmenu")) {
             const bbox = initiator.getBoundingClientRect();
             const zoom = unfixedClientZoom() || 1;
             ctxMenu.style.setProperty("--inline-size", `${bbox.width * zoom}`);
@@ -99,6 +113,9 @@ export const openContextMenu = (event, content: CTXMenuElement[])=>{
         //
         content.map((el: CTXMenuElement)=>{
             const li = document.createElement("li");
+            if (!li.dataset.highlight) { li.dataset.highlightHover = "2"; }
+
+            //
             li.addEventListener("click", (e)=>{
                 el.callback?.(initiator, {});
                 ctxMenu.dataset.hidden = "true";
@@ -138,10 +155,13 @@ const hash = async (string) => {
 }
 
 //
-const loadStyleSheet = async (inline: string, base?: [any, any])=>{
+const INTEGRITY = hash(styles);
+
+//
+const loadStyleSheet = async (inline: string, base?: [any, any], integrity?: string|Promise<string>)=>{
     const url = URL.canParse(inline) ? inline : URL.createObjectURL(new Blob([inline], {type: "text/css"}));
-    if (base?.[0] && !URL.canParse(inline) && base?.[0] instanceof HTMLLinkElement) {
-        base[0].setAttribute("integrity", await hash(inline));
+    if (base?.[0] && (!URL.canParse(inline) || integrity) && base?.[0] instanceof HTMLLinkElement) {
+        base[0].setAttribute("integrity", await (integrity || hash(inline)));
     }
     if (base) setStyleURL(base, url);
 }
@@ -159,16 +179,16 @@ const loadBlobStyle = (inline: string)=>{
 }
 
 //
-const loadInlineStyle = (inline: string, rootElement = document.head)=>{
+const loadInlineStyle = (inline: string, rootElement = document.head, integrity?: string|Promise<string>)=>{
     const PLACE = (rootElement.querySelector("head") ?? rootElement);
     if (PLACE instanceof HTMLHeadElement) { loadBlobStyle(inline); }
 
     //
     const style = document.createElement("style");
     style.dataset.owner = OWNER;
-    loadStyleSheet(inline, [style, "innerHTML"]);
+    loadStyleSheet(inline, [style, "innerHTML"], integrity);
     PLACE.appendChild(style);
 }
 
 //
-loadBlobStyle(preInit);
+loadInlineStyle(preInit, document.head, INTEGRITY);

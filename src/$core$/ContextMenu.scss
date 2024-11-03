@@ -79,6 +79,7 @@
             min-inline-size: 6rem;
             max-inline-size: 100%;
             inline-size: var(--inline-size, max-content);
+            overflow: hidden;
 
             //
             position: fixed;
@@ -98,6 +99,8 @@
 
         //
         * {
+            background-color: transparent;
+
             //
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
@@ -135,14 +138,21 @@
 
                 //
                 display: grid;
-                grid-template-columns: [icon] minmax(1rem, max-content) [content] minmax(0px, 1fr);
-            }
+                grid-template-rows: minmax(0px, 1fr);
+                grid-template-areas: "icon content";
+                grid-template-columns:
+                    [icon] minmax(1rem, max-content)
+                    [content] minmax(0px, 1fr);
+                background-color: transparent;
 
-            //
-            & > * {
-                pointer-events: none;
-                grid-column: content;
-                grid-row: 1 / 1 span;
+                //
+                & > * {
+                    pointer-events: none;
+                    grid-column: 2 / 2 span;
+                    grid-column: content;
+                    grid-row: 1 / 1 span;
+                    overflow: visible;
+                }
             }
         }
 
@@ -153,6 +163,7 @@
                 container-type: size;
                 contain: content;
                 position: relative;
+                background-color: transparent;
 
                 //
                 grid-column: scroll;
@@ -246,6 +257,7 @@
                 display: block;
                 padding: 0.125rem;
                 contain: content;
+                overflow: visible;
 
                 //
                 container-type: inline-size;
