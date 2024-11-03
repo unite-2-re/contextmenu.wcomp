@@ -123,6 +123,7 @@
                 block-size: max-content;
                 max-block-size: 2rem;
                 box-sizing: border-box;
+                gap: 0px;
 
                 //
                 cursor: pointer;
@@ -132,12 +133,22 @@
                 grid-template-rows: minmax(0px, 1fr);
                 grid-template-areas: "icon content";
                 grid-template-columns:
-                    [icon] minmax(1rem, max-content)
+                    [icon] minmax(0rem, max-content)
                     [content] minmax(0px, 1fr);
                 background-color: transparent;
 
                 //
+                place-content: center;
+                place-items: center;
+
+                //
+                justify-items: stretch;
+                justify-content: stretch;
+                text-align: start;
+
+                //
                 & > * {
+                    padding: 0rem;
                     pointer-events: none;
                     grid-column: 2 / 2 span;
                     grid-column: content;
@@ -231,7 +242,7 @@
                 flex-direction: column;
                 place-content: center;
                 place-items: stretch;
-                gap: 0.25rem;
+                gap: 0rem;
                 padding: 0px;
                 margin: 0px;
             }
