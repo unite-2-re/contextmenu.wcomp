@@ -41,6 +41,12 @@
             font-size: 0.9rem;
 
             //
+            scrollbar-gutter: auto;
+            scrollbar-color: transparent;
+            scrollbar-width: none;
+            overflow: hidden;
+
+            //
             cursor: default;
 
             //
@@ -70,7 +76,6 @@
             min-inline-size: 8rem;
             max-inline-size: 100%;
             inline-size: var(--inline-size, max-content);
-            overflow: hidden;
 
             //
             position: fixed;
@@ -248,6 +253,9 @@
             }
 
             & {
+                background-clip: border-box;
+                background-origin: border-box;
+
                 //place-self: start;
                 inset: 0px;
 
@@ -282,7 +290,7 @@
 
                 //
                 scrollbar-width: none;
-                scrollbar-gutter: stable;
+                scrollbar-gutter: auto;
                 scroll-behavior: smooth;
                 touch-action: pan-x;
 
@@ -290,8 +298,8 @@
                 pointer-events: auto;
 
                 //
-                grid-column: 1 / 2 span;
-                grid-row: 1 / 1 span;
+                grid-column: 1 / -1 !important;
+                grid-row: 1 / -1 !important;
 
                 //
                 white-space: nowrap;
