@@ -146,8 +146,8 @@
                 background-color: transparent;
 
                 //
-                place-content: center;
-                place-items: center;
+                place-content: safe center;
+                place-items: safe center;
 
                 //
                 justify-items: stretch;
@@ -186,9 +186,9 @@
                 pointer-events: none;
 
                 //
-                place-self: start start;
-                place-content: center start;
-                place-items: center start;
+                place-self: safe start start;
+                place-content: safe center start;
+                place-items: safe center start;
                 inset: 0px;
             }
 
@@ -248,8 +248,8 @@
                 block-size: max-content;
                 max-block-size: none;
                 flex-direction: column;
-                place-content: center;
-                place-items: stretch;
+                place-content: safe center;
+                place-items: safe stretch;
                 gap: 0rem;
                 padding: 0px;
                 margin: 0px;
