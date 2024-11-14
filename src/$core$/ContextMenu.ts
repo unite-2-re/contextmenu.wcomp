@@ -11,7 +11,7 @@ import { unfixedClientZoom } from "./Zoom";
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 
 //
-class ContextMenuElement extends HTMLElement {
+class UIContextMenuElement extends HTMLElement {
     #initialized: boolean = false;
     #themeStyle?: HTMLStyleElement;
 
@@ -72,11 +72,11 @@ class ContextMenuElement extends HTMLElement {
 }
 
 //
-customElements.define("u-contextmenu", ContextMenuElement);
+customElements.define("ui-contextmenu", UIContextMenuElement);
 
 //
 export default () => {};
-export { ContextMenuElement };
+export { UIContextMenuElement };
 
 //
 interface CTXMenuElement {
