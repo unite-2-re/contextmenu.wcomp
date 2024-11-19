@@ -31,7 +31,7 @@
     };
 
     //
-    :host(u-contextmenu) {
+    :host(ui-contextmenu) {
         & {
             --anchor-group: --u2-drop-menu;
 
@@ -342,12 +342,12 @@
     }
 
     //
-    :host(u-contextmenu[data-hidden="false"]), :host(u-contextmenu:not([data-hidden])) {
+    :host(ui-contextmenu[data-hidden="false"]), :host(ui-contextmenu:not([data-hidden])) {
         display: grid;
     }
 
     // global style
-    body:has(ui-dropmenu) u-contextmenu {
+    body:has(ui-dropmenu) ui-contextmenu {
         @supports(position-anchor: --example) {
             position-anchor: var(--anchor-group);
             inset-inline-start: anchor(var(--anchor-group) start);

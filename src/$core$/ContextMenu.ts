@@ -40,7 +40,7 @@ class UIContextMenuElement extends HTMLElement {
             //
             document.addEventListener("click", (ev)=>{
                 const t = ev.target as HTMLElement;
-                if (!((t?.closest("u-contextmenu") == this) || (t?.matches("u-contextmenu") && t == this))) {
+                if (!((t?.closest("ui-contextmenu") == this) || (t?.matches("ui-contextmenu") && t == this))) {
                     this.dataset.hidden = "true";
                 }
             });
@@ -87,7 +87,7 @@ interface CTXMenuElement {
 
 //
 export const closeContextMenu = ()=>{
-    const ctxMenu = document.querySelector("u-contextmenu") as HTMLElement;
+    const ctxMenu = document.querySelector("ui-contextmenu") as HTMLElement;
     if (ctxMenu) { ctxMenu.dataset.hidden = "true"; };
 }
 
@@ -101,7 +101,7 @@ const generateId = (len = 16) => {
 //
 export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolean = false)=>{
     const initiator = event?.target;
-    const ctxMenu   = document.querySelector("u-contextmenu") as HTMLElement;
+    const ctxMenu   = document.querySelector("ui-contextmenu") as HTMLElement;
 
     //
     if (ctxMenu && (toggle && ctxMenu.dataset.hidden || !toggle)) {
