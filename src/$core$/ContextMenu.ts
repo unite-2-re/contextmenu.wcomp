@@ -38,10 +38,12 @@ class UIContextMenuElement extends HTMLElement {
             shadow.appendChild(style);
 
             //
+            const weak = new WeakRef(this);
             document.addEventListener("click", (ev)=>{
                 const t = ev.target as HTMLElement;
-                if (!((t?.closest("ui-contextmenu") == this) || (t?.matches("ui-contextmenu") && t == this))) {
-                    this.dataset.hidden = "true";
+                const self = weak?.deref?.();
+                if (!((t?.closest("ui-contextmenu") == self) || (t?.matches("ui-contextmenu") && t == self))) {
+                    if (self) { self.dataset.hidden = "true"; };
                 }
             });
 
