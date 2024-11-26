@@ -39,13 +39,6 @@ class UIContextMenuElement extends HTMLElement {
 
             //
             const weak = new WeakRef(this);
-            document.addEventListener("click", (ev)=>{
-                const t = ev.target as HTMLElement;
-                const self = weak?.deref?.();
-                if (!((t?.closest("ui-contextmenu") == self) || (t?.matches("ui-contextmenu") && t == self))) {
-                    if (self) { self.dataset.hidden = "true"; };
-                }
-            });
 
             // @ts-ignore
             const THEME_URL = "/externals/core/theme.js";
@@ -96,7 +89,7 @@ export const closeContextMenu = ()=>{
     if (ctxMenu) { ctxMenu.dataset.hidden = "true"; };
 }
 
-  // generateId :: Integer -> String
+// generateId :: Integer -> String
 const generateId = (len = 16) => {
     var arr = new Uint8Array((len || 16) / 2);
     window.crypto.getRandomValues(arr);
@@ -107,6 +100,21 @@ const generateId = (len = 16) => {
 export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolean = false)=>{
     const initiator = event?.target;
     const ctxMenu   = document.querySelector("ui-contextmenu") as HTMLElement;
+    const hideOnClick = (ev)=>{
+        const t = ev.target as HTMLElement;
+        const self = ctxMenu;//weak?.deref?.();
+        if (!((t?.closest("ui-contextmenu") == self) || (t == self)) || ev.type == "click") {
+            if (self) { self.dataset.hidden = "true"; };
+            document.documentElement.removeEventListener("contextmenu", ...evt);
+            document.documentElement.removeEventListener("click", ...evt);
+        };
+    }
+
+    //
+    const evt: [any, any] = [ hideOnClick, {} ];
+    //document.documentElement.addEventListener("ui-ctx-menu", ...evt);
+    document.documentElement.addEventListener("contextmenu", ...evt);
+    document.documentElement.addEventListener("click", ...evt);
 
     //
     if (ctxMenu && (toggle && ctxMenu.dataset.hidden || !toggle)) {
