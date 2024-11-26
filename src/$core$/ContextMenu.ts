@@ -58,6 +58,9 @@ class UIContextMenuElement extends HTMLElement {
             //
             if (!this.dataset.scheme) { this.dataset.scheme = "solid"; }
             if (!this.dataset.highlight) { this.dataset.highlight = "1"; }
+
+            //
+            this.style.zIndex = "99999";
         }
     }
 

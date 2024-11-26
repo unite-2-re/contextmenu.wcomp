@@ -94,6 +94,9 @@
             //
             padding: 0px;
             margin: 0px;
+
+            //
+            z-index: calc(99999 + var(--z-index, 0));
         }
 
         //
