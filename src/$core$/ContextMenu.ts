@@ -84,10 +84,26 @@ interface CTXMenuElement {
 };
 
 //
-export const closeContextMenu = ()=>{
+export const closeContextMenu = (ev?)=>{
     const ctxMenu = document.querySelector("ui-contextmenu") as HTMLElement;
     if (ctxMenu) { ctxMenu.dataset.hidden = "true"; };
+
+    //
+    document.documentElement.removeEventListener("contextmenu", ...evt);
+    document.documentElement.removeEventListener("click", ...evt);
 }
+
+//
+const hideOnClick = (ev?)=>{
+    const t = ev.target as HTMLElement;
+    const self = document.querySelector("ui-contextmenu") as HTMLElement;
+    if (!((t?.closest("ui-contextmenu") == self) || (t == self)) || ev?.type == "click") {
+        closeContextMenu(ev);
+    };
+}
+
+//
+const evt: [any, any] = [ hideOnClick, {} ];
 
 // generateId :: Integer -> String
 const generateId = (len = 16) => {
@@ -100,24 +116,11 @@ const generateId = (len = 16) => {
 export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolean = false)=>{
     const initiator = event?.target;
     const ctxMenu   = document.querySelector("ui-contextmenu") as HTMLElement;
-    const hideOnClick = (ev)=>{
-        const t = ev.target as HTMLElement;
-        const self = ctxMenu;//weak?.deref?.();
-        if (!((t?.closest("ui-contextmenu") == self) || (t == self)) || ev.type == "click") {
-            if (self) { self.dataset.hidden = "true"; };
-            document.documentElement.removeEventListener("contextmenu", ...evt);
-            document.documentElement.removeEventListener("click", ...evt);
-        };
-    }
-
-    //
-    const evt: [any, any] = [ hideOnClick, {} ];
-    //document.documentElement.addEventListener("ui-ctx-menu", ...evt);
-    document.documentElement.addEventListener("contextmenu", ...evt);
-    document.documentElement.addEventListener("click", ...evt);
 
     //
     if (ctxMenu && (toggle && ctxMenu.dataset.hidden || !toggle)) {
+        document.documentElement.addEventListener("contextmenu", ...evt);
+        document.documentElement.addEventListener("click", ...evt);
 
         //
         if (initiator.matches("ui-dropmenu, .u2-dropmenu")) {
@@ -156,7 +159,7 @@ export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolea
             //
             li.addEventListener("click", (e)=>{
                 el.callback?.(initiator, {});
-                ctxMenu.dataset.hidden = "true";
+                closeContextMenu(event);
             });
             if (el.icon) {
                 el.icon.remove?.();
@@ -171,7 +174,7 @@ export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolea
         delete ctxMenu.dataset.hidden;
     } else
     if (ctxMenu && toggle && !ctxMenu.dataset.hidden) {
-        ctxMenu.dataset.hidden = "true";
+        closeContextMenu(event);
     }
 }
 
