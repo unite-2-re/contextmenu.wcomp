@@ -120,9 +120,8 @@
         }
 
         //
-        &:focus, :focus, ::slotted(:focus) {
-            outline: none;
-        }
+        &:focus, :focus, ::slotted(:focus) { outline: none; }
+        ::slotted(input) { display: none; pointer-events: none; opacity: 0; appearance: none; }
 
         //
         ::slotted(li) {
