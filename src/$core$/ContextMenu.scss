@@ -78,6 +78,7 @@
             max-block-size: 100%;
             min-inline-size: 8rem;
             max-inline-size: 100%;
+            inline-size: max-content;
             inline-size: var(--inline-size, max-content);
 
             //
@@ -122,11 +123,10 @@
         //
         &:focus, :focus, ::slotted(:focus) { outline: none; }
         ::slotted(input) { display: none; pointer-events: none; opacity: 0; appearance: none; }
-
-        //
         ::slotted(li) {
             & {
-                padding: 0.5rem;
+                padding-inline: 0.5rem;
+                padding-block: 0.75rem;
                 margin: 0px;
                 list-style-type: none;
                 min-block-size: 1rem;
