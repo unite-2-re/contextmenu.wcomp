@@ -141,7 +141,7 @@ export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolea
             ctxMenu.style.setProperty("--anchor-group", (initiator?.style?.getPropertyValue?.("anchor-name") || ("--" + ID)), "");
         } else {
             // TODO: better inline size
-            ctxMenu.style.setProperty("--inline-size", `6rem`);
+            ctxMenu.style.setProperty("--inline-size", `8rem`);
             ctxMenu.style.setProperty("--client-x", event.clientX);
             ctxMenu.style.setProperty("--client-y", event.clientY);
             ctxMenu.style.setProperty("--page-x", event.pageX);

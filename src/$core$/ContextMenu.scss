@@ -83,7 +83,7 @@
 
             //
             position: fixed;
-            inset-inline-start: calc(var(--client-x, 0) * 1px);
+            inset-inline-start: calc(var(--client-x, 0) * 1px);//clamp(0px, calc(var(--client-x, 0) * 1px), calc(100cqi - var(--inline-size, 0px)));
             inset-block-start: calc(var(--client-y, 0) * 1px);
             inset-inline-end: auto;
             inset-block-end: auto;
@@ -98,6 +98,12 @@
 
             //
             z-index: calc(99999 + var(--z-index, 0));
+
+            // correct only when top-left orientation
+            translate:
+                min(0px, calc(100cqi - (100% + var(--client-x, 0) * 1px)))
+                min(0px, calc(100cqb - (100% + var(--client-y, 0) * 1px)))
+                0px !important;
         }
 
         //
