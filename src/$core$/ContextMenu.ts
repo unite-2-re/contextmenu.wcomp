@@ -4,8 +4,8 @@ import styles from "./ContextMenu.scss?inline&compress";
 // @ts-ignore
 import html from "./ContextMenu.html?raw";
 
-//
-import { unfixedClientZoom } from "./Zoom";
+// @ts-ignore
+import { getBoundingOrientRect } from "/externals/core/agate.js";
 
 //
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
@@ -63,9 +63,6 @@ class UIContextMenuElement extends HTMLElement {
     //
     connectedCallback() {
         this.#initialize();
-
-        //this.#themeStyle = module?.default?.(this.shadowRoot);
-        //if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
     }
 }
 
@@ -124,11 +121,10 @@ export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolea
 
         //
         if (initiator.matches("ui-dropmenu, .u2-dropmenu")) {
-            const bbox = initiator.getBoundingClientRect();
-            const zoom = unfixedClientZoom() || 1;
-            ctxMenu.style.setProperty("--inline-size", `${bbox.width * zoom}`);
-            ctxMenu.style.setProperty("--client-x", `${bbox.left * zoom}`);
-            ctxMenu.style.setProperty("--client-y", `${bbox.bottom * zoom}`);
+            const bbox = getBoundingOrientRect(initiator);
+            ctxMenu.style.setProperty("--inline-size", `${bbox.width}`);
+            ctxMenu.style.setProperty("--client-x", `${bbox.left}`);
+            ctxMenu.style.setProperty("--client-y", `${bbox.bottom}`);
 
             //
             const initialAnchor = initiator?.style?.getPropertyValue?.("anchor-name");
@@ -141,17 +137,16 @@ export const openContextMenu = (event, content: CTXMenuElement[], toggle: boolea
             ctxMenu.style.setProperty("--anchor-group", (initiator?.style?.getPropertyValue?.("anchor-name") || ("--" + ID)), "");
         } else {
             // TODO: better inline size
+            // TODO: agate.UX pointer events support
             ctxMenu.style.setProperty("--inline-size", `8rem`);
-            ctxMenu.style.setProperty("--client-x", event.clientX);
-            ctxMenu.style.setProperty("--client-y", event.clientY);
-            ctxMenu.style.setProperty("--page-x", event.pageX);
-            ctxMenu.style.setProperty("--page-y", event.pageY);
+            ctxMenu.style.setProperty("--client-x", event?.clientX || 0);
+            ctxMenu.style.setProperty("--client-y", event?.clientY || 0);
+            ctxMenu.style.setProperty("--page-x", event?.pageX || 0);
+            ctxMenu.style.setProperty("--page-y", event?.pageY || 0);
         }
 
         //
         ctxMenu.innerHTML = "";
-
-        //
         content.map((el: CTXMenuElement)=>{
             const li = document.createElement("li");
             if (!li.dataset.highlightHover) { li.dataset.highlightHover = "1"; }
