@@ -83,8 +83,8 @@
 
             //
             position: fixed;
-            inset-inline-start: calc(var(--client-x, 0) * 1px);//clamp(0px, calc(var(--client-x, 0) * 1px), calc(100cqi - var(--inline-size, 0px)));
-            inset-block-start: calc(var(--client-y, 0) * 1px);
+            inset-inline-start: max(calc(var(--client-x, 0) * 1px), 0px);
+            inset-block-start: max(calc(var(--client-y, 0) * 1px), 0px);
             inset-inline-end: auto;
             inset-block-end: auto;
 
